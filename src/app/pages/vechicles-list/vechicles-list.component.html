@@ -1,0 +1,178 @@
+<div class="row">
+    <div class="col-8">
+        <div class="row cont">
+            <div class="col-3">
+                <label class="form-label"><b>Nombre:</b></label>
+                <input type="text" class="form-control" [(ngModel)]="criteria.name">
+            </div>
+            <div class="col-2">
+                <label class="form-label"><b>Modelo:</b></label>
+                <select class="form-select" [(ngModel)]="criteria.model">
+                    <option value="">Selecciona un Año</option>
+                    @for (item of modelList; track item) {
+                    <option value="{{item}}">{{item}}</option>
+                    }
+                </select>
+            </div>
+            @if (fuelTypeResult$ | async; as resultObject) {
+            <div class="col-3">
+                <label class="form-label"><b>Tipo de Combustible:</b></label>
+                <select class="form-select" [(ngModel)]="criteria.idFuelType">
+                    <option value="">Seleccione un tipo de combustible</option>
+                    @for (item of resultObject; track item.idFuelType) {
+                    <option value="{{item.idFuelType}}">{{item.name}}</option>
+                    }
+                </select>
+            </div>
+            }
+            @if (vehicleTypeResults$ | async; as resultObject) {
+            <div class="col-3">
+                <label class="form-label"><b>Tipo de Vehiculo:</b></label>
+                <select class="form-select" [(ngModel)]="criteria.idVehicleType">
+                    <option value="">Seleccione un tipo de vehiculo</option>
+                    @for (item of resultObject; track item.idVehicleType) {
+                    <option value="{{item.idVehicleType}}">{{item.name}}</option>
+                    }
+                </select>
+            </div>
+            }
+            <div class="col-1" style="padding-top: 31px;">
+                <button type="button" class="btn btn-primary" (click)="searchByCriteria()">
+                    Buscar
+                </button>
+            </div>
+        </div>
+        <div class="cont-table">
+            @if (vechileResult$ | async; as resultObject) {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Fecha Creación</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (item of resultObject; track item.idVehicle) {
+                    <tr>
+                        <td>{{item.name}}</td>
+                        <td>{{item.creationDate}}</td>
+                        <td>{{item.active}}</td>
+                        <td>
+                            <button type="button" class="btn btn-success" [disabled]="!item.active" (click)="selectedVehicle(item.idVehicle)">
+                                >
+                            </button>
+                            <button type="button" class="btn btn-danger" [disabled]="!item.active" (click)="removeVehicule(item.idVehicle)">
+                                -
+                            </button>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            }
+        </div>
+        <div>
+            @if (errorMessage) {
+            <app-error-message [errorMessage]="errorMessage" />
+            }
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="row cont">
+            @if(!applyEdit){
+            <h3>Crear Vehiculo</h3>
+            }
+            @if(applyEdit){
+                <h3>Editar Información Vehiculo</h3>
+                }
+            <div class="col-12">
+                <label class="form-label"><b>Nombre:</b></label>
+                <input type="text" class="form-control" [(ngModel)]="formData.name">
+            </div>
+            @if (vehicleTypeResults$ | async; as resultObject) {
+            <div class="col-12">
+                <label class="form-label"><b>Tipo de Vehiculo:</b></label>
+                <select class="form-select" [(ngModel)]="formData.idVehicleType">
+                    <option value="">Seleccione un tipo de vehiculo</option>
+                    @for (item of resultObject; track item.idVehicleType) {
+                    <option value="{{item.idVehicleType}}">{{item.name}}</option>
+                    }
+                </select>
+            </div>
+            }
+            @if (fuelTypeResult$ | async; as resultObject) {
+            <div class="col-12">
+                <label class="form-label"><b>Tipo de Combustible:</b></label>
+                <select class="form-select" [(ngModel)]="formData.idFuelType">
+                    <option value="">Seleccione un tipo de combustible</option>
+                    @for (item of resultObject; track item.idFuelType) {
+                    <option value="{{item.idFuelType}}">{{item.name}}</option>
+                    }
+                </select>
+            </div>
+            }
+            <div class="col-12">
+                <label class="form-label"><b>Marca:</b></label>
+                <input type="text" class="form-control" [(ngModel)]="formData.brand">
+            </div>
+            <div class="col-12">
+                <label class="form-label"><b>Modelo:</b></label>
+                <select class="form-select" [(ngModel)]="formData.model">
+                    <option value="">Selecciona un Año</option>
+                    @for (item of modelList; track item) {
+                    <option value="{{item}}">{{item}}</option>
+                    }
+                </select>
+            </div>
+            <div class="col-6">
+                <label class="form-label"><b>Cilindraje:</b></label>
+                <input type="number" class="form-control" [(ngModel)]="formData.cylinderCapacity">
+            </div>
+            <div class="col-6">
+                <label class="form-label"><b>Puestos:</b></label>
+                <input type="number" class="form-control" [(ngModel)]="formData.seating">
+            </div>
+            <div class="col-6">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" [(ngModel)]="formData.automatic">
+                    <label class="form-check-label">
+                        Automatico
+                    </label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" [(ngModel)]="formData.manual">
+                    <label class="form-check-label">
+                        Manual
+                    </label>
+                </div>
+            </div>
+            <div class="col-12">
+                <label class="form-label"><b>Precio:</b></label>
+                <input type="number" class="form-control" [(ngModel)]="formData.price">
+            </div>
+            <div class="col-6">
+                @if (!applyEdit) {
+                <button type="button" class="btn btn-primary" (click)="createVehicle()">
+                    Crear
+                </button>
+                }@else{
+                <button type="button" class="btn btn-success" (click)="editVehicule()">
+                    Guardar
+                </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@if(applyLoading){
+<div class="loading">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+    </div>
+</div>
+}
